@@ -12,15 +12,8 @@ class Tetromino {
     MVLEFT: 'mvleft'
   })
 
-  shape = Tetromino.shapes[
-    Object.keys(Tetromino.shapes)[RandomInRange(0, Object.keys(Tetromino.shapes).length)]
-  ];
-  // provide uniform distribution
-  coords = {
-    x1: RandomInRange(0 - Math.floor(this.shape[0].length / 2),
-      Board.x + Math.floor(this.shape[0].length / 2)),
-    y1: 0
-  }
+  shape;
+  coords;
 
   constructor(other) {
     if (other) {
@@ -28,6 +21,15 @@ class Tetromino {
       this.coords = { x1: other.coords.x1, y1: other.coords.y1 };
     }
     else {
+      this.shape = Tetromino.shapes[
+        Object.keys(Tetromino.shapes)[RandomInRange(0, Object.keys(Tetromino.shapes).length)]
+      ];
+      // provide uniform distribution
+      this.coords = {
+        x1: RandomInRange(0 - Math.floor(this.shape[0].length / 2),
+          Board.x + Math.floor(this.shape[0].length / 2)),
+        y1: 0
+      }
       this.rotate(Math.floor(RandomInRange(0, 4)));
     }
   }
@@ -135,7 +137,7 @@ class Board {
 
   _handleFullRows() {
     for (let ri = 0; ri < this._fields.length; ++ri)
-      if (this._fields[ri].every((v, _, arr) => v && v === arr[0])) {
+      if (this._fields[ri].every((v) => v)) {
         this._fields.splice(ri, 1)
         this._fields.unshift(new Array(Board.x).fill(0));
         --ri;
