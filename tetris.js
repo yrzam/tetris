@@ -170,7 +170,7 @@ class Game {
   }
 
   act(action) {
-    this._boardHandler(this._board.act(this._tetromino, action));
+    if (!this.isOver) this._boardHandler(this._board.act(this._tetromino, action));
   }
 
   _boardHandler({ board, isFinalPos, gameOver }) {
