@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Test task</title>
+  <style>
+    html {
+      background-color: black;
+      text-align: center;
+      padding: 0.5rem;
+      color: white;
+      font-size: 2rem;
+      font-family: Arial, sans-serif;
+    }
+
+    #board,
+    #score {
+      margin: 0.5rem;
+      padding: 0.5rem;
+      line-height: 0.5em;
+    }
+
+    #controls {
+      display: none;
+    }
+
+    button {
+      background-color: black;
+      color: white;
+      padding: 0.2rem;
+      margin: 0;
+      border: 1px solid white;
+      box-shadow: 1px 1px 1px grey;
+      font-size: 100%;
+    }
+
+    #controls button {
+      vertical-align: middle;
+      font-size: 100%;
+      width: 2.25rem;
+      height: 4.25rem;
+      margin-bottom: 0;
+      padding-bottom: 0.3rem;
+    }
+
+    #newGame,
+    #title {
+      margin-top: 0.5rem;
+    }
+  </style>
+  <script type="text/javascript" src="./shapes.js"></script>
+  <script type="text/javascript" src="./tetris.js"></script>
+</head>
+
+<body>
+  <div id="title">TETRIS</div>
+  <div id="score"></div>
+  <pre id="board"></pre>
+  <div id="controls">
+    <button type="button" onclick="game?.act(Tetromino.Actions.MVLEFT)">←</button>
+    <button type="button" onclick="game?.act(Tetromino.Actions.ROTATE)">↻</button>
+    <button type="button" onclick="game?.act(Tetromino.Actions.MVRIGHT)">→</button>
+  </div>
+  <div><button type="button" onclick="newGame()" id="newGame">New game</button></div>
+  <script type="text/javascript">
+
+    const displ = (ids, v) => {
+      typeof ids === 'string' ? ids = [ids] : ids;
+      ids.forEach(id => document.getElementById(id).style.display = v);
+    };
+    let game;
+    function newGame() {
+      displ('controls', 'initial');
+      displ(['newGame', 'title'], 'none')
+      game = new Game();
+      this.renderLoop();
+    }
+    function gameOver() {
+      document.getElementById('board').innerHTML = 'Game over';
+      displ('newGame', 'initial');
+      displ('controls', 'none');
+      game = null;
+    }
+    async function renderLoop() {
+      while (!game.isOver) {
+        let str = game.view.map(arr => `o${arr.map(val => val ? 'x' : ' ').join('')}o`)
+          .join('\n') + `\n` + 'o'.repeat(game.view[0].length + 2);
+        document.getElementById('board').innerHTML = str;
+        document.getElementById('score').innerHTML = `Score: ${game.score}`;
+        await new Promise(r => setTimeout(r, 1000 / 30));
+      }
+      gameOver();
+    }
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'ArrowLeft') game?.act(Tetromino.Actions.MVLEFT)
+      else if (event.key === 'ArrowRight') game?.act(Tetromino.Actions.MVRIGHT)
+      else if (event.key === ' ') game?.act(Tetromino.Actions.ROTATE)
+    })
+
+  </script>
+</body>
+
+</html>
