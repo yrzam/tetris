@@ -1,5 +1,5 @@
 // [a, b)
-function RandomInRange(a, b) {
+function randomInRange(a, b) {
   return a + Math.floor(Math.random() * (b - a));
 }
 
@@ -22,15 +22,15 @@ class Tetromino {
     }
     else {
       this.shape = Tetromino.shapes[
-        Object.keys(Tetromino.shapes)[RandomInRange(0, Object.keys(Tetromino.shapes).length)]
+        Object.keys(Tetromino.shapes)[randomInRange(0, Object.keys(Tetromino.shapes).length)]
       ];
       // provide uniform distribution
       this.coords = {
-        x1: RandomInRange(0 - Math.floor(this.shape[0].length / 2),
+        x1: randomInRange(0 - Math.floor(this.shape[0].length / 2),
           Board.x + Math.floor(this.shape[0].length / 2)),
         y1: -this.shape.length + 1
       }
-      this.rotate(Math.floor(RandomInRange(0, 4)));
+      this.rotate(Math.floor(randomInRange(0, 4)));
     }
   }
 
