@@ -28,16 +28,17 @@ class Tetromino {
       this.coords = {
         x1: RandomInRange(0 - Math.floor(this.shape[0].length / 2),
           Board.x + Math.floor(this.shape[0].length / 2)),
-        y1: 0
+        y1: -this.shape.length + 1
       }
       this.rotate(Math.floor(RandomInRange(0, 4)));
     }
   }
 
   _fixWallKick() {
-    const { x1: realX1, x2: realX2 } = Tetromino.getRealBoundaries(this);
+    const { x1: realX1, x2: realX2, y2: realY2 } = Tetromino.getRealBoundaries(this);
     if (realX1 < 0) this.coords.x1 -= realX1;                             // + (0 - realX1)
     if (realX2 > Board.x - 1) this.coords.x1 += (Board.x - 1) - realX2;   // + (max - realX2)
+    if (realY2 < 0) this.coords.y1 -= realY2;                             // + (0 - realY1)
   }
 
   rotate(N = 1) {
@@ -127,9 +128,11 @@ class Board {
   _isFinalPos(tetromino) {
     let isFinal = false;
     tetromino.shape.forEach((r, y) => r.forEach((_, x) => {
-      if (tetromino.shape[y][x] &&
-        (tetromino.coords.y1 + y === Board.y - 1
-          || this._fields[tetromino.coords.y1 + y + 1][tetromino.coords.x1 + x]))
+      let targetY = y + tetromino.coords.y1, targetX = x + tetromino.coords.x1;
+      if ((targetY >= 0 && tetromino.shape[y][x]) &&
+        (targetY === Board.y - 1
+          || this._fields[targetY + 1][targetX]
+          || this._fields[targetY][targetX]))
         isFinal = true;
     }))
     return isFinal;
