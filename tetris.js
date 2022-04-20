@@ -78,7 +78,7 @@ class Board {
   static x = 10;
   static y = 20;
 
-  _fields = new Array(Board.y).fill(new Array(Board.x).fill(0));
+  _fields = Array(Board.y).fill().map(() => Array(Board.x).fill(0));
 
   firstFrame(tetromino) {
     return this._finalize(tetromino);
